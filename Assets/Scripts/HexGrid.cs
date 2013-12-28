@@ -23,7 +23,8 @@ public class HexGrid : MonoBehaviour {
 	{
 		new int[]{ 3, 3, 3, 3, 3, 3, 3 },
 		new int[]{ 3, 0, 2, 2, 2, 2, 3 },
-		new int[]{ 3, 2, 1, 1, 1, 2, 3 },
+		new int[]{ 3, 2, 1, 1, 2, 2, 3 },
+		new int[]{ 3, 2, 2, 2, 1, 2, 3 }
 		new int[]{ 3, 2, 2, 2, 2, 4, 3 },
 		new int[]{ 3, 3, 3, 3, 3, 3, 3 },
 		
@@ -36,7 +37,7 @@ public class HexGrid : MonoBehaviour {
 		offsetZ = unitLength * 1.5f;
 		
 
-		for( int i = 0; i < 5; i++ ) {
+		for( int i = 0; i < 6; i++ ) {
 			for( int j = 0; j < 7; j++ ) {
 				Vector3 hexpos = HexOffset( i, j );
 				Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
