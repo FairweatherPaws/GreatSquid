@@ -7,6 +7,9 @@ public class HexGrid : MonoBehaviour {
 	public static int mapWidth = 25;
 	public static int mapLength = 25;
 
+	public int monsterCount = 6;
+	private int ax, az;
+
 	private static float x = 25;
 	private static float z = 25;
 
@@ -17,10 +20,11 @@ public class HexGrid : MonoBehaviour {
 	private float offsetX, offsetZ;
 
 	public Transform [] tile; // tile types
-	
-	//Inn, road, grass, forest, dungeon
 
-	private int[,] mapMaking = new int[mapWidth, mapLength];
+
+	//Inn, road, grass, forest, dungeon, monster
+
+	public int[,] mapMaking = new int[mapWidth, mapLength];
 //	{
 //		new int[]{ 3, 3, 3, 3, 3, 3, 3, 3 },
 //		new int[]{ 3, 0, 2, 2, 2, 2, 2, 3 },
@@ -103,7 +107,26 @@ public class HexGrid : MonoBehaviour {
 				Instantiate(tile[ mapMaking[i,j] ], pos, transform.rotation );
 			}
 		}
+		for( int i = 0; i < monsterCount; i++) {
+			
+		Reroll:
+				ax = Random.Range (0, mapWidth);
+			az = Random.Range (0, mapLength);
+			if (mapMaking[ax,az] != 2) 
+			{
+				goto Reroll;
+			}
+			Vector3 hexpos = HexOffset( ax, az );
+			Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
+			Instantiate(tile[5], pos, transform.rotation );
+			
+		}
+		for(int i = 0; i < 1; i++){
 
+			Vector3 hexpos = HexOffset( savex, savez );
+			Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
+			Instantiate(tile[6], pos, transform.rotation );
+		}
 	}
 	
 	Vector3 HexOffset( int x, int z ) {
