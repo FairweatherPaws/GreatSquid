@@ -10,6 +10,7 @@ public class HexGrid : MonoBehaviour {
 	public int monsterCount = 6;
 	private int ax, az;
 
+
 	private static float x = 25;
 	private static float z = 25;
 
@@ -25,6 +26,7 @@ public class HexGrid : MonoBehaviour {
 	//Inn, road, grass, forest, dungeon, monster
 
 	public int[,] mapMaking = new int[mapWidth, mapLength];
+	public Transform[,] pieceInfo = new Transform[mapWidth, mapLength];
 //	{
 //		new int[]{ 3, 3, 3, 3, 3, 3, 3, 3 },
 //		new int[]{ 3, 0, 2, 2, 2, 2, 2, 3 },
@@ -36,7 +38,7 @@ public class HexGrid : MonoBehaviour {
 	private int tileType;
 
 
-	void Start() {
+	void Awake() {
 		float unitLength = ( useAsInnerCircleRadius )? (radius / (Mathf.Sqrt(3)/2)) : radius;
 		
 		offsetX = unitLength * Mathf.Sqrt(3);
@@ -101,10 +103,16 @@ public class HexGrid : MonoBehaviour {
 		for( int i = 0; i < x; i++ ) {
 			for( int j = 0; j < z; j++ ) {
 			
-				
+
 				Vector3 hexpos = HexOffset( i, j );
 				Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
-				Instantiate(tile[ mapMaking[i,j] ], pos, transform.rotation );
+				//Instantiate(tile[ mapMaking[i,j] ], pos, transform.rotation );
+
+
+				pieceInfo[i,j] = Instantiate(tile[mapMaking[i,j]], pos, transform.rotation ) as Transform;
+
+				//Debug.Log(pieceInfo[i,j].transform.position);
+
 			}
 		}
 		for( int i = 0; i < monsterCount; i++) {
@@ -118,14 +126,14 @@ public class HexGrid : MonoBehaviour {
 			}
 			Vector3 hexpos = HexOffset( ax, az );
 			Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
-			Instantiate(tile[5], pos, transform.rotation );
+			pieceInfo[ax,az] = Instantiate(tile[5], pos, transform.rotation ) as Transform;
 			
 		}
 		for(int i = 0; i < 1; i++){
 
 			Vector3 hexpos = HexOffset( savex, savez );
 			Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
-			Instantiate(tile[6], pos, transform.rotation );
+			pieceInfo[savex,savez] = Instantiate(tile[6], pos, transform.rotation ) as Transform;
 		}
 	}
 	
