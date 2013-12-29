@@ -10,10 +10,11 @@ public class MonBehaviour : MonoBehaviour {
 	private float countdown;
 	public bool monTurn = false;
 	private bool runOnce = true;
+	private bool seekPlayLoc = true;
 	private Transform[,] waypoints;
 	private Transform[,] ownloc;
-	private Transform[,] playloc;
-	private int ownloci, ownlocj, playloci, playlocj, dloci, dlocj;
+	private Transform[,] playerLoc;
+	private int ownloci, ownlocj, playerLoci, playerLocj, dloci, dlocj;
 	private int x = 25;
 	private int z = 25;
 
@@ -24,13 +25,25 @@ public class MonBehaviour : MonoBehaviour {
 		GameObject Object1 = GameObject.Find("GameController"); //Access HexGrid-script through this.
 		HexGrid Script1 = Object1.GetComponent<HexGrid>();
 		waypoints = Script1.pieceInfo;
-		Debug.Log (transform.position);
+
+
+		GameObject Object2 = GameObject.Find("defHero"); //Access HeroBehaviour-script through this.
+		HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
+		playerLoc = Script2.playerLoc;
+		playerLoci = Script2.playerloci;
+		playerLocj = Script2.playerlocj;
+
+
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.GetKeyDown("space")) {monTurn = true; countdown = 6;}
+		if (Input.GetKeyDown("space")) {monTurn = true; countdown = 6; seekPlayLoc = true;}
+
+
+
 		if (spawnSizing && maxsize > 0)
 		{ 
 				this.transform.localScale += new Vector3(0,0, 0.05f);
@@ -54,11 +67,19 @@ public class MonBehaviour : MonoBehaviour {
 				runOnce = false;
 			}
 			// search player location match
-			playloci = 5;
-			playlocj = 5;
+
+			if (seekPlayLoc)
+			{
+				GameObject Object2 = GameObject.Find("defHero"); //Access HeroBehaviour-script through this.
+				HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
+				playerLoci = Script2.playerloci;
+				playerLocj = Script2.playerlocj;
+				seekPlayLoc = false;
+			}
+
 			// move toward player
-			dloci = ownloci - playloci;
-			dlocj = ownlocj - playlocj;
+			dloci = ownloci - playerLoci;
+			dlocj = ownlocj - playerLocj;
 
 			countdown -= Time.deltaTime;
 			
