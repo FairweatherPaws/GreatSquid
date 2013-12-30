@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class MonBehaviour : MonoBehaviour {
 
@@ -9,15 +11,18 @@ public class MonBehaviour : MonoBehaviour {
 	public float endturntimer = 6;
 	private float countdown;
 	public bool monTurn = false;
-	private bool runOnce = true;
+	private bool runOnce = false;
 	private bool seekPlayLoc = true;
 	private Transform[,] waypoints;
 	private Transform[,] ownloc;
-	private Transform[,] playerLoc;
-	private int ownloci, ownlocj, playerLoci, playerLocj, dloci, dlocj;
+	private Vector3 playerLoc;
+	private int ownloci, ownlocj, playerLoci, playerLocj, dloci, dlocj, index;
 	private int x = 25;
 	private int z = 25;
-
+	private Vector3 targetSpot;
+	private float optimalDist;
+	private List<float> optDist;
+	private List<int> optDisti, optDistj;
 
 	// Use this for initialization
 	void Start () {
@@ -30,7 +35,7 @@ public class MonBehaviour : MonoBehaviour {
 
 		GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
 		HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
-		playerLoc = Script2.playerLoc;
+
 		playerLoci = Script2.playerloci;
 		playerLocj = Script2.playerlocj;
 
@@ -45,7 +50,7 @@ public class MonBehaviour : MonoBehaviour {
 		{ 
 			GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
 			HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
-			if (Script2.countdown < 1) {monTurn = true; seekPlayLoc = true; countdown = 10;}
+			if (Script2.countdown < 1) {monTurn = true; seekPlayLoc = true; countdown = 12; runOnce = true;}
 		}
 
 
@@ -58,11 +63,26 @@ public class MonBehaviour : MonoBehaviour {
 		if (monTurn)
 		{
 
+			if (seekPlayLoc)
+			{
+				GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
+				HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
+				playerLoci = Script2.playerloci;
+				playerLocj = Script2.playerlocj;
+				playerLoc = Script2.transform.position;
+				
+				seekPlayLoc = false;
+			}
 			// search own location match
 			if (runOnce){
+
+				optDist = new List<float>();
+				optDisti = new List<int>();
+				optDistj = new List<int>();
+				
 			for( int i = 0; i < x; i++ ) {
 				for( int j = 0; j < z; j++ ) {
-			
+
 					if (waypoints[i,j].position == this.transform.position) {
 						ownloci = i;
 						ownlocj = j;
@@ -70,19 +90,31 @@ public class MonBehaviour : MonoBehaviour {
 						}
 					}
 				}
+			
+				for (int i = -2; i < 3; i++){
+					for (int j = -2; j < 3; j++){
+						{
+							targetSpot = waypoints[ownloci+i,ownlocj+j].transform.position;
+							optimalDist = Vector3.Distance (targetSpot, playerLoc);
+							optDist.Add(optimalDist);
+							optDisti.Add (i);
+							optDistj.Add (j);
+						}
+					}
+				}
+
+				float shortestDist = optDist.Min<float>();
+				index = optDist.IndexOf( shortestDist );
+
+				ownloci += optDisti[index];
+				ownlocj += optDistj[index];
+				
 				runOnce = false;
 			}
+
 			// search player location match
 
-			if (seekPlayLoc)
-			{
-				GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
-				HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
-				playerLoci = Script2.playerloci;
-				playerLocj = Script2.playerlocj;
 
-				seekPlayLoc = false;
-			}
 
 			// move toward player
 			dloci = ownloci - playerLoci;
@@ -90,22 +122,34 @@ public class MonBehaviour : MonoBehaviour {
 
 			countdown -= Time.deltaTime;
 
-			if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj)){}
+			//scans the area around itself and chooses the best path
 
-			if (Mathf.Abs( dloci) < Mathf.Abs(dlocj)){}
 
-			if (Mathf.Abs( dloci) > Mathf.Abs(dlocj) && dloci >= 0) // i larger and pos
-			{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci-1,ownlocj].position, Time.deltaTime);
-				if (countdown < 1) {ownloci -= 1;}}
-			if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj) && dloci < 0) // i larger and neg
-			{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci+1,ownlocj].position, Time.deltaTime);
-				if (countdown < 1) {ownloci += 1;}}
-			if (Mathf.Abs( dloci) <= Mathf.Abs(dlocj) && dlocj >= 0) // j larger and pos
-			{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci,ownlocj-1].position, Time.deltaTime);
-				if (countdown < 1) {ownlocj -= 1;}}
-			if (Mathf.Abs( dloci) < Mathf.Abs(dlocj) && dlocj < 0) // j larger and neg
-			{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci,ownlocj+1].position, Time.deltaTime);
-				if (countdown < 1) {ownlocj += 1;}}
+
+
+			Debug.Log ("b"+ownloci);
+
+
+
+			transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci,ownlocj].position, Time.deltaTime);
+
+			Debug.Log ("a"+ownloci);
+			//if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj)){}
+
+			//if (Mathf.Abs( dloci) < Mathf.Abs(dlocj)){}
+
+			//if (Mathf.Abs( dloci) > Mathf.Abs(dlocj) && dloci >= 0) // i larger and pos
+			//{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci-1,ownlocj].position, Time.deltaTime);
+			//	if (countdown < 1) {ownloci -= 1;}}
+			//if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj) && dloci < 0) // i larger and neg
+			//{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci+1,ownlocj].position, Time.deltaTime);
+			//	if (countdown < 1) {ownloci += 1;}}
+			//if (Mathf.Abs( dloci) <= Mathf.Abs(dlocj) && dlocj >= 0) // j larger and pos
+			//{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci,ownlocj-1].position, Time.deltaTime);
+			//	if (countdown < 1) {ownlocj -= 1;}}
+			//if (Mathf.Abs( dloci) < Mathf.Abs(dlocj) && dlocj < 0) // j larger and neg
+			//{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci,ownlocj+1].position, Time.deltaTime);
+			//	if (countdown < 1) {ownlocj += 1;}}
 		
 
 			if (countdown < 1) {

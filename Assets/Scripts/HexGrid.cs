@@ -104,8 +104,8 @@ public class HexGrid : MonoBehaviour {
 		for( int i = 0; i < monsterCount; i++) {
 			
 		Reroll:
-				ax = Random.Range (0, mapWidth);
-			az = Random.Range (0, mapLength);
+			ax = Random.Range (2, mapWidth-2);
+			az = Random.Range (2, mapLength-2);
 			if (mapMaking[ax,az] != 2) 
 			{
 				goto Reroll;

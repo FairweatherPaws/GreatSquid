@@ -23,7 +23,7 @@ public class GUIScript : MonoBehaviour {
 			GameObject Object1 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
 			HeroBehaviour Script1 = Object1.GetComponent<HeroBehaviour>();
 			movesLeftSTR = Script1.movesLeftSTR;
-			Debug.Log (Script1.movesLeftSTR);
+
 			countdown -= Time.deltaTime;
 		}
 	}
