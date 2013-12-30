@@ -22,12 +22,12 @@ public class MonBehaviour : MonoBehaviour {
 	void Start () {
 
 
-		GameObject Object1 = GameObject.Find("GameController"); //Access HexGrid-script through this.
+		GameObject Object1 = GameObject.FindGameObjectWithTag("GameController"); //Access HexGrid-script through this.
 		HexGrid Script1 = Object1.GetComponent<HexGrid>();
 		waypoints = Script1.pieceInfo;
 
 
-		GameObject Object2 = GameObject.Find("defHero"); //Access HeroBehaviour-script through this.
+		GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
 		HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
 		playerLoc = Script2.playerLoc;
 		playerLoci = Script2.playerloci;
@@ -40,8 +40,12 @@ public class MonBehaviour : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.GetKeyDown("space")) {monTurn = true; countdown = 6; seekPlayLoc = true;}
-
+		if (Input.GetKeyDown("space"))
+		{ 
+			GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
+			HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
+			if (Script2.countdown < 1) {monTurn = true; countdown = 6; seekPlayLoc = true;}
+		}
 
 
 		if (spawnSizing && maxsize > 0)
@@ -70,10 +74,11 @@ public class MonBehaviour : MonoBehaviour {
 
 			if (seekPlayLoc)
 			{
-				GameObject Object2 = GameObject.Find("defHero"); //Access HeroBehaviour-script through this.
+				GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
 				HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
 				playerLoci = Script2.playerloci;
 				playerLocj = Script2.playerlocj;
+
 				seekPlayLoc = false;
 			}
 
@@ -95,7 +100,7 @@ public class MonBehaviour : MonoBehaviour {
 			if (Mathf.Abs( dloci) < Mathf.Abs(dlocj) && dlocj < 0) // j larger and neg
 			{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci,ownlocj+1].position, Time.deltaTime);
 				if (countdown < 1) {ownlocj += 1;}}
-			Debug.Log(ownloci);
+		
 
 			if (countdown < 1) {
 				monTurn = false;

@@ -8,36 +8,46 @@ public class HeroBehaviour : MonoBehaviour {
 	private bool runOnce = true;	
 	public int playerloci, playerlocj, tarloci, tarlocj, dloci, dlocj;
 	public Transform[,] playerLoc;
-	private float countdown = 0;
+	public float countdown = 0;
 	private int x = 25;
 	private int z = 25;
 	private GameObject mSelectedObject;
 	private float distanceToTarget, distanceCounter;
 	public float speedLimit = 4;
 	public int maxMoves = 4;
-	private int moveCost;
+	public int moveCost;
 	public string movesLeftSTR = "4";
+	public float cooldown = 0;
 	
 	// Use this for initialization
 	void Start () {
 		
-		GameObject Object1 = GameObject.Find("GameController"); //Access HexGrid-script through this.
+		GameObject Object1 = GameObject.FindGameObjectWithTag("GameController"); //Access HexGrid-script through this.
 		HexGrid Script1 = Object1.GetComponent<HexGrid>();
 		playerLoc = Script1.pieceInfo;
+		playerloci = Script1.savex;
+		playerlocj = Script1.savez;
 		Debug.Log (transform.position);
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		cooldown -= Time.deltaTime;
+
 		if (spawnSizing && maxsize > 0)
 		{ 
 			this.transform.localScale += new Vector3(0,0, 0.05f);
 			maxsize -= Time.deltaTime;
 		}
 
-		if (Input.GetKeyDown("space")) {speedLimit = maxMoves;}
+		if (Input.GetKeyDown("space") && countdown < 1) 
+		{
+			speedLimit = maxMoves; 
+			cooldown = 6;
+			movesLeftSTR = speedLimit.ToString();
+		}
 
 		if (runOnce){
 			for( int i = 0; i < x; i++ ) {
@@ -51,15 +61,22 @@ public class HeroBehaviour : MonoBehaviour {
 			}
 			runOnce = false;
 		}
-		if (Input.GetMouseButtonDown(0)){
+		if (Input.GetMouseButtonDown(0) && cooldown < 1){
 			SelectObjectByMousePos();
 			distanceToTarget = Vector3.Distance (this.transform.position, mSelectedObject.transform.position);
 			distanceCounter = distanceToTarget/1.75f;
 			moveCost = Mathf.CeilToInt(distanceCounter);
-			countdown = 3 * moveCost + 1;
-		}
 
-		if (distanceToTarget < (speedLimit * 1.75)){
+			if (speedLimit - moveCost >= 0){
+			speedLimit -= moveCost;
+			movesLeftSTR = speedLimit.ToString();
+			}
+			else {moveCost = 0;}
+
+			countdown = (2 * moveCost + 1);	
+		}
+		
+		if (distanceToTarget < (moveCost * 1.75)){
 		if (countdown > 1) {
 
 				countdown -= Time.deltaTime;
@@ -78,8 +95,7 @@ public class HeroBehaviour : MonoBehaviour {
 				if (countdown < 1) {
 					playerloci = tarloci; 
 					playerlocj = tarlocj;
-					speedLimit -= moveCost;
-					movesLeftSTR = speedLimit.ToString();
+
 				}
 			}
 
@@ -134,9 +150,7 @@ public class HeroBehaviour : MonoBehaviour {
 
 		}
 	}
-	void OnGUI () {
-		GUI.Box (new Rect(10, 10, 200, 30), new GUIContent("Moves remaining:" +movesLeftSTR) );
-	}
+
 }
 
 	

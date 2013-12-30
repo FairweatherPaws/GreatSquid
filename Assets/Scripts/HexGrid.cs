@@ -14,7 +14,7 @@ public class HexGrid : MonoBehaviour {
 	private static float x = 25;
 	private static float z = 25;
 
-	private int innx, innz, dunx, dunz, reroll, savex, savez, davex, davez;
+	public int innx, innz, dunx, dunz, reroll, savex, savez, davex, davez;
 	public float radius = 0.5f;
 	public bool useAsInnerCircleRadius = true;
 	
@@ -155,19 +155,4 @@ public class HexGrid : MonoBehaviour {
 		return position;
 	}
 
-
-	void Start(){
-
-		GameObject Object1 = GameObject.Find("defHero"); //Access HeroBehaviour-script through this.
-		HeroBehaviour Script1 = Object1.GetComponent<HeroBehaviour>();
-		movesLeftSTR = Script1.movesLeftSTR;
-
-	}
-
-
-
-
-	void OnGUI () {
-		GUI.Box (new Rect(10, 10, 200, 30), new GUIContent("Moves remaining:" +movesLeftSTR) );
-}
 }
