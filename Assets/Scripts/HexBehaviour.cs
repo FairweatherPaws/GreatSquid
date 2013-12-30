@@ -6,9 +6,12 @@ public class HexBehaviour : MonoBehaviour {
 	public GameObject parentisation;
 	public Material BasicMat;
 	public Material HighlightedMat;
+	public Material VisibleMat;
 	public bool forestsizing = false;
 	public bool grasssizing = false;
-	private float timeout = 2;
+	public bool clickReset = true;
+	private float timeout = 1;
+	private float reDyeTime = 6;
 
 	// selected GameObject http://denis-potapenko.blogspot.fi/2013/03/task-3-object-selection-and-highlight.html
 	private GameObject mSelectedObject;
@@ -35,17 +38,53 @@ public class HexBehaviour : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
+		{
+			reDyeTime = 0; 
+			this.renderer.material = BasicMat;
+		}
+		reDyeTime += Time.deltaTime;
 		timeout -= Time.deltaTime;
-		if (timeout < 1) {this.renderer.material = BasicMat;}
-
+		GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
+		HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
+		
+		float distance = Vector3.Distance(Script2.transform.position, this.transform.position);
+		
+		float disUnits = Mathf.CeilToInt(distance/1.75f);
+		
+		float cap = Script2.speedLimit;
+		if (timeout < 1)
+		{
+			if (cap < disUnits) 
+			{
+				this.renderer.material = BasicMat;
+			}	
+			if (cap >= disUnits && reDyeTime > 5 && this.renderer.material != HighlightedMat) 
+			{
+				this.renderer.material = VisibleMat;
+			}
+			if (cap >= disUnits && reDyeTime <= 5) 
+			{
+				this.renderer.material = BasicMat;
+			}
+		}
+		if (Input.GetMouseButtonDown(0)) {clickReset = true; reDyeTime = 0;}
+		
 		// process object selection
 
 	}
 	void OnMouseOver()
 	{
 		SelectObjectByMousePos();
+
 	}
 
+	void OnMouseDown()
+	{
+
+		
+	}
+	
 	private void SelectObjectByMousePos()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -86,15 +125,25 @@ public GameObject SelectedObject
 		//{
 		//	goOld.renderer.material = BasicMat;
 		//}
-		
+			GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
+			HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
+
+
+			float distance = Vector3.Distance(Script2.transform.position, mSelectedObject.transform.position);
+
+			float disUnits = Mathf.CeilToInt(distance/1.75f);
+
+			float cap = Script2.speedLimit;
 		// set material to selected object
-		if (mSelectedObject != null)
-		{
-			mSelectedObject.renderer.material = HighlightedMat;
+			if (mSelectedObject != null && cap >= disUnits && reDyeTime > 5)
+			{
+				mSelectedObject.renderer.material = HighlightedMat;
 				timeout = 1.1f;
 			}
 
-	}
+			
+			
+		}
 }
 
 

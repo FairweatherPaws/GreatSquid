@@ -18,6 +18,7 @@ public class MonBehaviour : MonoBehaviour {
 	private int x = 25;
 	private int z = 25;
 
+
 	// Use this for initialization
 	void Start () {
 
@@ -44,7 +45,7 @@ public class MonBehaviour : MonoBehaviour {
 		{ 
 			GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
 			HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
-			if (Script2.countdown < 1) {monTurn = true; countdown = 6; seekPlayLoc = true;}
+			if (Script2.countdown < 1) {monTurn = true; seekPlayLoc = true; countdown = 10;}
 		}
 
 
@@ -56,6 +57,7 @@ public class MonBehaviour : MonoBehaviour {
 
 		if (monTurn)
 		{
+
 			// search own location match
 			if (runOnce){
 			for( int i = 0; i < x; i++ ) {
@@ -87,7 +89,11 @@ public class MonBehaviour : MonoBehaviour {
 			dlocj = ownlocj - playerLocj;
 
 			countdown -= Time.deltaTime;
-			
+
+			if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj)){}
+
+			if (Mathf.Abs( dloci) < Mathf.Abs(dlocj)){}
+
 			if (Mathf.Abs( dloci) > Mathf.Abs(dlocj) && dloci >= 0) // i larger and pos
 			{transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci-1,ownlocj].position, Time.deltaTime);
 				if (countdown < 1) {ownloci -= 1;}}
@@ -104,7 +110,7 @@ public class MonBehaviour : MonoBehaviour {
 
 			if (countdown < 1) {
 				monTurn = false;
-			
+				
 				//snaps the pieces into their new places. Unelegant as can be.
 			//	if (Mathf.Abs( dloci) > Mathf.Abs(dlocj) && dloci >= 0) // i larger and pos
 			//	{this.transform.position = waypoints[ownloci-1,ownlocj].transform.position;}
