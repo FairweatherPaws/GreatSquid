@@ -28,6 +28,12 @@ public class GUIScript : MonoBehaviour {
 		}
 	}
 	void OnGUI () {
+		GameObject Object2 = GameObject.FindGameObjectWithTag("CameraController"); //Access cam-script through this.
+		CameraScript Script2 = Object2.GetComponent<CameraScript>();
+
+		if (Script2.currentCamera == Script2.mainCamera){
+
 		GUI.Box (new Rect(10, 10, 200, 30),"Moves remaining: " +movesLeftSTR );
+		}
 	}
 }
