@@ -9,7 +9,7 @@ public class HexGrid : MonoBehaviour {
 
 	public int monsterCount = 6;
 	private int ax, az;
-
+	private string movesLeftSTR;
 
 	private static float x = 25;
 	private static float z = 25;
@@ -100,21 +100,7 @@ public class HexGrid : MonoBehaviour {
 		}
 		mapMaking[savex, savez] = 0;
 		mapMaking[davex, davez] = 4;
-		for( int i = 0; i < x; i++ ) {
-			for( int j = 0; j < z; j++ ) {
-			
 
-				Vector3 hexpos = HexOffset( i, j );
-				Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
-				//Instantiate(tile[ mapMaking[i,j] ], pos, transform.rotation );
-
-
-				pieceInfo[i,j] = Instantiate(tile[mapMaking[i,j]], pos, transform.rotation ) as Transform;
-
-				//Debug.Log(pieceInfo[i,j].transform.position);
-
-			}
-		}
 		for( int i = 0; i < monsterCount; i++) {
 			
 		Reroll:
@@ -130,11 +116,28 @@ public class HexGrid : MonoBehaviour {
 			
 		}
 		for(int i = 0; i < 1; i++){
-
+			
 			Vector3 hexpos = HexOffset( savex, savez );
 			Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
 			pieceInfo[savex,savez] = Instantiate(tile[6], pos, transform.rotation ) as Transform;
 		}
+
+		for( int i = 0; i < x; i++ ) {
+			for( int j = 0; j < z; j++ ) {
+			
+
+				Vector3 hexpos = HexOffset( i, j );
+				Vector3 pos = new Vector3( hexpos.x, 0, hexpos.z);
+				//Instantiate(tile[ mapMaking[i,j] ], pos, transform.rotation );
+
+
+				pieceInfo[i,j] = Instantiate(tile[mapMaking[i,j]], pos, transform.rotation ) as Transform;
+
+				//Debug.Log(pieceInfo[i,j].transform.position);
+
+			}
+		}
+
 	}
 	
 	Vector3 HexOffset( int x, int z ) {
@@ -151,4 +154,20 @@ public class HexGrid : MonoBehaviour {
 		
 		return position;
 	}
+
+
+	void Start(){
+
+		GameObject Object1 = GameObject.Find("defHero"); //Access HeroBehaviour-script through this.
+		HeroBehaviour Script1 = Object1.GetComponent<HeroBehaviour>();
+		movesLeftSTR = Script1.movesLeftSTR;
+
+	}
+
+
+
+
+	void OnGUI () {
+		GUI.Box (new Rect(10, 10, 200, 30), new GUIContent("Moves remaining:" +movesLeftSTR) );
+}
 }

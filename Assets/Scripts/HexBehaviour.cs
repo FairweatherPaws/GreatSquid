@@ -45,11 +45,7 @@ public class HexBehaviour : MonoBehaviour {
 	{
 		SelectObjectByMousePos();
 	}
-	void OnMouseOut()
-	{
-		this.renderer.material = BasicMat;
-		Debug.Log("Oy!");
-	}
+
 	private void SelectObjectByMousePos()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -95,7 +91,7 @@ public GameObject SelectedObject
 		if (mSelectedObject != null)
 		{
 			mSelectedObject.renderer.material = HighlightedMat;
-				timeout = 1.05f;
+				timeout = 1.1f;
 			}
 
 	}
