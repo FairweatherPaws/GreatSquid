@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\Intro.cs" />
      <Compile Include="Assets\Scripts\MonBehaviour.cs" />
      <None Include="Assets\Plugins\GoKit\easing\easeEquationsLicense.txt" />
+     <None Include="Assets\Fonts\3dText.shader" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">

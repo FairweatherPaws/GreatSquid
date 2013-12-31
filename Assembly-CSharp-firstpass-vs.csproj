@@ -111,6 +111,7 @@
      <Compile Include="Assets\Plugins\GoKit\properties\splines\GoSplineQuadraticBezierSolver.cs" />
      <Compile Include="Assets\Plugins\GoKit\properties\splines\GoSplineStraightLineSolver.cs" />
      <None Include="Assets\Plugins\GoKit\easing\easeEquationsLicense.txt" />
+     <None Include="Assets\Fonts\3dText.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
