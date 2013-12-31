@@ -48,11 +48,12 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraScript.cs" />
      <Compile Include="Assets\Scripts\GUIScript.cs" />
+     <Compile Include="Assets\Scripts\GUIScriptOld.cs" />
      <Compile Include="Assets\Scripts\HeroBehaviour.cs" />
      <Compile Include="Assets\Scripts\HexBehaviour.cs" />
      <Compile Include="Assets\Scripts\HexGrid.cs" />
-     <Compile Include="Assets\Scripts\Intro.cs" />
      <Compile Include="Assets\Scripts\MonBehaviour.cs" />
+     <Compile Include="Assets\Scripts\TextScript.cs" />
      <None Include="Assets\Plugins\GoKit\easing\easeEquationsLicense.txt" />
      <None Include="Assets\Fonts\3dText.shader" />
   </ItemGroup>

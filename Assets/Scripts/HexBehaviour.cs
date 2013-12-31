@@ -12,6 +12,7 @@ public class HexBehaviour : MonoBehaviour {
 	public bool clickReset = true;
 	private float timeout = 1;
 	private float reDyeTime = 6;
+	public bool gameOn = false;
 
 	// selected GameObject http://denis-potapenko.blogspot.fi/2013/03/task-3-object-selection-and-highlight.html
 	private GameObject mSelectedObject;
@@ -38,53 +39,60 @@ public class HexBehaviour : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonDown(0) && gameOn == false)
 		{
-			reDyeTime = 0; 
-			this.renderer.material = BasicMat;
+			
+			GameObject Object2 = GameObject.FindGameObjectWithTag("GUIController"); //Access GUI-script through this.
+			GUIScript Script2 = Object2.GetComponent<GUIScript>();
+			gameOn = Script2.gameOn;
+			
 		}
-		reDyeTime += Time.deltaTime;
-		timeout -= Time.deltaTime;
-		GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
-		HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
-		
-		float distance = Vector3.Distance(Script2.transform.position, this.transform.position);
-		
-		float disUnits = Mathf.CeilToInt(distance/1.75f);
-		
-		float cap = Script2.speedLimit;
-		if (timeout < 1)
-		{
-			if (cap < disUnits) 
+
+		if (gameOn){
+			if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
 			{
-				this.renderer.material = BasicMat;
-			}	
-			if (cap >= disUnits && reDyeTime > 5 && this.renderer.material != HighlightedMat) 
-			{
-				this.renderer.material = VisibleMat;
-			}
-			if (cap >= disUnits && reDyeTime <= 5) 
-			{
+				reDyeTime = 0; 
 				this.renderer.material = BasicMat;
 			}
-		}
-		if (Input.GetMouseButtonDown(0)) {clickReset = true; reDyeTime = 0;}
+			reDyeTime += Time.deltaTime;
+			timeout -= Time.deltaTime;
+			GameObject Object2 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
+			HeroBehaviour Script2 = Object2.GetComponent<HeroBehaviour>();
+			
+			float distance = Vector3.Distance(Script2.transform.position, this.transform.position);
+			
+			float disUnits = Mathf.CeilToInt(distance/1.75f);
+			
+			float cap = Script2.speedLimit;
+			if (timeout < 1)
+			{
+				if (cap < disUnits) 
+				{
+					this.renderer.material = BasicMat;
+				}	
+				if (cap >= disUnits && reDyeTime > 5 && this.renderer.material != HighlightedMat) 
+				{
+					this.renderer.material = VisibleMat;
+				}
+				if (cap >= disUnits && reDyeTime <= 5) 
+				{
+					this.renderer.material = BasicMat;
+				}
+			}
+			if (Input.GetMouseButtonDown(0) && gameOn == true) {clickReset = true; reDyeTime = 0;}
 		
 		// process object selection
+		}
 
 	}
 	void OnMouseOver()
 	{
-		SelectObjectByMousePos();
-
+		if (gameOn){
+			SelectObjectByMousePos();
+		}
 	}
 
-	void OnMouseDown()
-	{
 
-		
-	}
-	
 	private void SelectObjectByMousePos()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -134,6 +142,8 @@ public GameObject SelectedObject
 			float disUnits = Mathf.CeilToInt(distance/1.75f);
 
 			float cap = Script2.speedLimit;
+
+
 		// set material to selected object
 			if (mSelectedObject != null && cap >= disUnits && reDyeTime > 5)
 			{

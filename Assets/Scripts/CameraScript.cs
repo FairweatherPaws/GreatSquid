@@ -22,7 +22,11 @@ public class CameraScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if(Input.GetKeyDown("ssjtsy"))
+	
+			
+
+
+		if(Input.GetKeyDown("y"))
 		{
 			currentCameraIndex++;
 			if (currentCameraIndex > cameras.Length-1)

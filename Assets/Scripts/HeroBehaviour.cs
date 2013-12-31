@@ -5,7 +5,8 @@ public class HeroBehaviour : MonoBehaviour {
 
 	public bool spawnSizing = false;
 	public float maxsize = 10;
-	private bool runOnce = true;	
+	private bool runOnce = true;
+	public bool gameOn = false;
 	public int playerloci, playerlocj, tarloci, tarlocj, dloci, dlocj;
 	public Transform[,] playerLoc;
 	public float countdown = 0;
@@ -34,71 +35,84 @@ public class HeroBehaviour : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		cooldown -= Time.deltaTime;
-
-		if (spawnSizing && maxsize > 0)
-		{ 
-			this.transform.localScale += new Vector3(0,0, 0.05f);
-			maxsize -= Time.deltaTime;
-		}
-
-		if (Input.GetKeyDown("space") && countdown < 1) 
+		if (Input.GetMouseButtonDown(0) && gameOn == false)
 		{
-			speedLimit = maxMoves; 
-			cooldown = 6;
-			movesLeftSTR = speedLimit.ToString();
+
+			GameObject Object2 = GameObject.FindGameObjectWithTag("GUIController"); //Access GUI-script through this.
+			GUIScript Script2 = Object2.GetComponent<GUIScript>();
+			gameOn = Script2.gameOn;
+
 		}
 
-		if (runOnce){
-			for( int i = 0; i < x; i++ ) {
-				for( int j = 0; j < z; j++ ) {
-					
-					if (playerLoc[i,j].position == this.transform.position) {
-						playerloci = i;
-						playerlocj = j;
+
+
+		if (gameOn){
+
+			cooldown -= Time.deltaTime;
+
+			if (spawnSizing && maxsize > 0)
+			{ 
+				this.transform.localScale += new Vector3(0,0, 0.05f);
+				maxsize -= Time.deltaTime;
+			}
+
+			if (Input.GetKeyDown("space") && countdown < 1) 
+			{
+				speedLimit = maxMoves; 
+				cooldown = 6;
+				movesLeftSTR = speedLimit.ToString();
+			}
+
+			if (runOnce){
+				for( int i = 0; i < x; i++ ) {
+					for( int j = 0; j < z; j++ ) {
+						
+						if (playerLoc[i,j].position == this.transform.position) {
+							playerloci = i;
+							playerlocj = j;
+						}
+					}
+				}
+				runOnce = false;
+			}
+			if (Input.GetMouseButtonDown(0) && cooldown < 1){
+				SelectObjectByMousePos();
+				distanceToTarget = Vector3.Distance (this.transform.position, mSelectedObject.transform.position);
+				distanceCounter = distanceToTarget/1.75f;
+				moveCost = Mathf.CeilToInt(distanceCounter);
+
+				if (speedLimit - moveCost >= 0){
+				speedLimit -= moveCost;
+				movesLeftSTR = speedLimit.ToString();
+				}
+				else {moveCost = 0;}
+
+				countdown = (2 * moveCost + 1);	
+			}
+			
+			if (distanceToTarget < (moveCost * 1.75)){
+			if (countdown > 1) {
+
+					countdown -= Time.deltaTime;
+				transform.position = Vector3.MoveTowards(this.transform.position, playerLoc[tarloci,tarlocj].position, Time.deltaTime);
+				
+
+				//if (Mathf.Abs( dloci) > Mathf.Abs(dlocj) && dloci > 0) // i larger and pos
+				//{if (countdown < 1) {playerloci -= 1;}}
+				//if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj) && dloci < 0) // i larger and neg
+				//{if (countdown < 1) {playerloci += 1;}}
+				//if (Mathf.Abs( dloci) <= Mathf.Abs(dlocj) && dlocj > 0) // j larger and pos
+				//{if (countdown < 1) {playerlocj -= 1;}}
+				//if (Mathf.Abs( dloci) < Mathf.Abs(dlocj) && dlocj < 0) // j larger and neg
+				//{if (countdown < 1) {playerlocj += 1;}}
+				
+					if (countdown < 1) {
+						playerloci = tarloci; 
+						playerlocj = tarlocj;
+
 					}
 				}
 			}
-			runOnce = false;
-		}
-		if (Input.GetMouseButtonDown(0) && cooldown < 1){
-			SelectObjectByMousePos();
-			distanceToTarget = Vector3.Distance (this.transform.position, mSelectedObject.transform.position);
-			distanceCounter = distanceToTarget/1.75f;
-			moveCost = Mathf.CeilToInt(distanceCounter);
-
-			if (speedLimit - moveCost >= 0){
-			speedLimit -= moveCost;
-			movesLeftSTR = speedLimit.ToString();
-			}
-			else {moveCost = 0;}
-
-			countdown = (2 * moveCost + 1);	
-		}
-		
-		if (distanceToTarget < (moveCost * 1.75)){
-		if (countdown > 1) {
-
-				countdown -= Time.deltaTime;
-			transform.position = Vector3.MoveTowards(this.transform.position, playerLoc[tarloci,tarlocj].position, Time.deltaTime);
-			
-
-			//if (Mathf.Abs( dloci) > Mathf.Abs(dlocj) && dloci > 0) // i larger and pos
-			//{if (countdown < 1) {playerloci -= 1;}}
-			//if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj) && dloci < 0) // i larger and neg
-			//{if (countdown < 1) {playerloci += 1;}}
-			//if (Mathf.Abs( dloci) <= Mathf.Abs(dlocj) && dlocj > 0) // j larger and pos
-			//{if (countdown < 1) {playerlocj -= 1;}}
-			//if (Mathf.Abs( dloci) < Mathf.Abs(dlocj) && dlocj < 0) // j larger and neg
-			//{if (countdown < 1) {playerlocj += 1;}}
-			
-				if (countdown < 1) {
-					playerloci = tarloci; 
-					playerlocj = tarlocj;
-
-				}
-			}
-
 			
 		}
 		//if (countdown < 1) {playerloci = tarloci; playerlocj = tarlocj;}

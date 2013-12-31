@@ -1,9 +1,0 @@
-fileFormatVersion: 2
-guid: 2e213add2066d414bae0b16ae642b548
-MonoImporter:
-  serializedVersion: 2
-  defaultReferences:
-  - IntroScreen: {fileID: 400010, guid: 1aaac7dbcfb225e459e10d73666899b5, type: 2}
-  executionOrder: 0
-  icon: {instanceID: 0}
-  userData: 
