@@ -5,7 +5,7 @@ using System.Linq;
 
 public class GUIScript : MonoBehaviour {
 
-	public Transform IntroScreen, UpperLeftHud, Instructions;
+	public Transform IntroScreen, UpperLeftHud, Instructions, OptionScreen, BackgroundPlane;
 	private GoTweenChain chain;
 	public Material Instruct01, Instruct02, Instruct03, Instruct04;
 	private Material[] instructRotation;
@@ -13,10 +13,13 @@ public class GUIScript : MonoBehaviour {
 	private Material currentMaterial;
 	public bool gameOn = false;
 	private GameObject[] gos;
+	public bool audioOn = true;
+	private TextMesh tm;
+
 
 	private GameObject mSelectedObject;
 
-	public GameObject blankBG, BacktoMainMenu, NextPage, PrevPage, goToInstruct, goToOptions, makeStart, leaveGame;
+	public GameObject blankBG, BacktoMainMenu, NextPage, PrevPage, goToInstruct, goToOptions, makeStart, leaveGame, muteAudio, returnToMainMenu;
 	
 	public string movesLeftSTR = "";
 	private float countdown = 1;
@@ -30,14 +33,18 @@ public class GUIScript : MonoBehaviour {
 		currentMaterial = Instruct01;
 		gos = GameObject.FindGameObjectsWithTag("MenuText");
 		mSelectedObject = blankBG;
-		
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		Debug.Log(gameOn);
 		if (gameOn == false) // Menu code
 		{
+
+			FindTarget();
+
+
 
 			if(Input.GetKeyDown("m")) // starts the game running
 			{
@@ -85,7 +92,7 @@ public class GUIScript : MonoBehaviour {
 			}
 //			textObjectList = new List<GameObject>();
 
-			FindTarget();
+
 
 
 //			GameObject Object1[]  = GameObject[].FindGameObjectsWithTag("MenuText"); //Access Text-script through this.
@@ -97,7 +104,6 @@ public class GUIScript : MonoBehaviour {
 //			{mSelectedObject = Script1.gameObject;}
 //			Debug.Log (Script1.chosenOne);
 
-			Debug.Log (mSelectedObject.name+"rr");
 
 			if(Input.GetMouseButtonDown(0))
 			{
@@ -108,12 +114,12 @@ public class GUIScript : MonoBehaviour {
 					
 					instructRotationIndex = 0;
 					
-					GoTween instruTween = new GoTween(Instructions, 3f, new GoTweenConfig().position (new Vector3( 0, -800, 0 )).eulerAngles(new Vector3(0, 180, 0)));
+					GoTween instruTween = new GoTween(Instructions, 3f, new GoTweenConfig().position (new Vector3( 0, -800, 0 )));
 					chain = new GoTweenChain();
 					chain.append(instruTween);
 					chain.play();
 					
-					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, -135 )).eulerAngles(new Vector3(117, 0, 0)));
+					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, -135 )).eulerAngles(new Vector3(117, 0, 0), true));
 					chain = new GoTweenChain();
 					chain.append(rotTween);
 					chain.play();
@@ -133,7 +139,7 @@ public class GUIScript : MonoBehaviour {
 						chain.append(instruTween);
 						chain.play();
 
-						GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, 0 )).eulerAngles(new Vector3(0, 0, 0)));
+						GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, 0 )).eulerAngles(new Vector3(117, 0, 0), true));
 						chain = new GoTweenChain();
 						chain.append(rotTween);
 						chain.play();
@@ -155,7 +161,7 @@ public class GUIScript : MonoBehaviour {
 						chain.append(instruTween);
 						chain.play();
 
-						GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, 0 )).eulerAngles(new Vector3(0, 0, 0)));
+						GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, 0 )).eulerAngles(new Vector3(117, 0, 0), true));
 						chain = new GoTweenChain();
 						chain.append(rotTween);
 						chain.play();
@@ -174,13 +180,93 @@ public class GUIScript : MonoBehaviour {
 						chain.append(instruTween);
 						chain.play();
 						
-						GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, 0 )).eulerAngles(new Vector3(0, 0, 0)));
+					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, 0 )).eulerAngles(new Vector3(117, 0, 0), true));
 						chain = new GoTweenChain();
 						chain.append(rotTween);
 						chain.play();
 
 					}
+
+				if(mSelectedObject == goToOptions) // open instructions
+				{
+					
+					GoTween optiTween = new GoTween(OptionScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -800, 0 )));
+					chain = new GoTweenChain();
+					chain.append(optiTween);
+					chain.play();
+					
+					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, -135 )).eulerAngles(new Vector3(117, 0, 0), true));
+					chain = new GoTweenChain();
+					chain.append(rotTween);
+					chain.play();
+					
+
+					
+				}
 				
+				if(mSelectedObject == returnToMainMenu) // back to main menu
+				{
+					
+					
+					GoTween optiTween = new GoTween(OptionScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -800, -400 )));
+					chain = new GoTweenChain();
+					chain.append(optiTween);
+					chain.play();
+					
+					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, -700, 0 )).eulerAngles(new Vector3(117, 0, 0), true));
+					chain = new GoTweenChain();
+					chain.append(rotTween);
+					chain.play();
+					
+				}
+
+				if(mSelectedObject == muteAudio)
+				{
+					if (audioOn)
+					{
+						AudioListener.volume = 0F;
+						audioOn = false;
+						tm = muteAudio.GetComponent<TextMesh>();
+						tm.text = "Sound: disabled";
+					}
+					else {
+						AudioListener.volume = 1F;
+						audioOn = true;
+						tm = muteAudio.GetComponent<TextMesh>();
+						tm.text = "Sound: enabled";
+					}
+
+
+				}
+
+				if(mSelectedObject == leaveGame)
+				{
+					Application.Quit();
+
+				
+				
+				
+				}
+
+				if(mSelectedObject == makeStart) 
+				
+				{
+					gameOn = true;
+
+					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, 0, -400), true));
+					GoTween optiTween = new GoTween(OptionScreen, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -400 ), true));
+					GoTween instruTween = new GoTween(Instructions, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -400 ), true));
+					GoTween backTween = new GoTween(BackgroundPlane, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -1600), true));
+					chain = new GoTweenChain();
+
+					chain.append(optiTween);
+					chain.append(instruTween);
+					chain.append(backTween);
+					chain.append(rotTween);
+					chain.play ();
+
+				}
+
 				ChangeMaterial();
 			}
 		}
@@ -273,17 +359,11 @@ public class GUIScript : MonoBehaviour {
 //	}
 	GameObject FindTarget(){
 	foreach (GameObject go in gos) {
-		
 		TextScript Script1 = go.GetComponent<TextScript>();
 		if (Script1.chosenOne == true) {
 			mSelectedObject = go;
-			
-			
-			Debug.Log (go.name+"true");
 			return mSelectedObject;
 		}
-		else {Debug.Log (go.name);}
-
 	}
 		mSelectedObject = blankBG;
 		return mSelectedObject;

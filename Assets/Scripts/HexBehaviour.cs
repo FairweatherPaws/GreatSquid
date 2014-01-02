@@ -79,7 +79,7 @@ public class HexBehaviour : MonoBehaviour {
 					this.renderer.material = BasicMat;
 				}
 			}
-			if (Input.GetMouseButtonDown(0) && gameOn == true) {clickReset = true; reDyeTime = 0;}
+			if (Input.GetMouseButtonDown(0)) {clickReset = true; reDyeTime = 0;}
 		
 		// process object selection
 		}
