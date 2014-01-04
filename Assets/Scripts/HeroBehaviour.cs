@@ -9,7 +9,7 @@ public class HeroBehaviour : MonoBehaviour {
 	public bool gameOn = false;
 	public int playerloci, playerlocj, tarloci, tarlocj, dloci, dlocj;
 	public Transform[,] playerLoc;
-	public float countdown = 0;
+	public float countdown = 10;
 	private int x = 25;
 	private int z = 25;
 	private GameObject mSelectedObject;
@@ -28,7 +28,7 @@ public class HeroBehaviour : MonoBehaviour {
 		playerLoc = Script1.pieceInfo;
 		playerloci = Script1.savex;
 		playerlocj = Script1.savez;
-		Debug.Log (transform.position);
+
 		
 	}
 	
@@ -41,6 +41,7 @@ public class HeroBehaviour : MonoBehaviour {
 			GameObject Object2 = GameObject.FindGameObjectWithTag("GUIController"); //Access GUI-script through this.
 			GUIScript Script2 = Object2.GetComponent<GUIScript>();
 			gameOn = Script2.gameOn;
+			cooldown = 7;
 
 		}
 
@@ -60,6 +61,7 @@ public class HeroBehaviour : MonoBehaviour {
 			{
 				speedLimit = maxMoves; 
 				cooldown = 6;
+				countdown = 6;
 				movesLeftSTR = speedLimit.ToString();
 			}
 
@@ -87,14 +89,15 @@ public class HeroBehaviour : MonoBehaviour {
 				}
 				else {moveCost = 0;}
 
-				countdown = (2 * moveCost + 1);	
+				countdown = (2 * moveCost + 1);
+
 			}
 			
 			if (distanceToTarget < (moveCost * 1.75)){
-			if (countdown > 1) {
+				if (countdown >= 1) {
 
 					countdown -= Time.deltaTime;
-				transform.position = Vector3.MoveTowards(this.transform.position, playerLoc[tarloci,tarlocj].position, Time.deltaTime);
+					transform.position = Vector3.MoveTowards(this.transform.position, playerLoc[tarloci,tarlocj].position, Time.deltaTime);
 				
 
 				//if (Mathf.Abs( dloci) > Mathf.Abs(dlocj) && dloci > 0) // i larger and pos
@@ -105,7 +108,8 @@ public class HeroBehaviour : MonoBehaviour {
 				//{if (countdown < 1) {playerlocj -= 1;}}
 				//if (Mathf.Abs( dloci) < Mathf.Abs(dlocj) && dlocj < 0) // j larger and neg
 				//{if (countdown < 1) {playerlocj += 1;}}
-				
+
+
 					if (countdown < 1) {
 						playerloci = tarloci; 
 						playerlocj = tarlocj;
@@ -146,7 +150,7 @@ public class HeroBehaviour : MonoBehaviour {
 
 			// assign new game object
 			mSelectedObject = value;
-			Debug.Log(mSelectedObject.transform.position);
+
 			for( int i = 0; i < x; i++ ) {
 				for( int j = 0; j < z; j++ ) {
 

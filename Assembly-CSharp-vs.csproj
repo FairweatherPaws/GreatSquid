@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\HeroBehaviour.cs" />
      <Compile Include="Assets\Scripts\HexBehaviour.cs" />
      <Compile Include="Assets\Scripts\HexGrid.cs" />
+     <Compile Include="Assets\Scripts\MenuButton.cs" />
      <Compile Include="Assets\Scripts\MonBehaviour.cs" />
      <Compile Include="Assets\Scripts\TextScript.cs" />
      <None Include="Assets\Plugins\GoKit\easing\easeEquationsLicense.txt" />

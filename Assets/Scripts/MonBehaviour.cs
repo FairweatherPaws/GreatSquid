@@ -99,7 +99,7 @@ public class MonBehaviour : MonoBehaviour {
 						if (waypoints[i,j].position == this.transform.position) {
 							ownloci = i;
 							ownlocj = j;
-							Debug.Log (i);
+							
 							}
 						}
 					}
@@ -121,7 +121,9 @@ public class MonBehaviour : MonoBehaviour {
 
 					ownloci += optDisti[index];
 					ownlocj += optDistj[index];
-					
+
+					//--COMBAT IMMINENT-- INJECTION GOES HERE
+
 					runOnce = false;
 				}
 
@@ -140,13 +142,13 @@ public class MonBehaviour : MonoBehaviour {
 
 
 
-				Debug.Log ("b"+ownloci);
+
 
 
 
 				transform.position = Vector3.MoveTowards(this.transform.position, waypoints[ownloci,ownlocj].position, Time.deltaTime);
 
-				Debug.Log ("a"+ownloci);
+
 				//if (Mathf.Abs( dloci) >= Mathf.Abs(dlocj)){}
 
 				//if (Mathf.Abs( dloci) < Mathf.Abs(dlocj)){}

@@ -9,9 +9,13 @@ public class GUIScript : MonoBehaviour {
 	private GoTweenChain chain;
 	public Material Instruct01, Instruct02, Instruct03, Instruct04;
 	private Material[] instructRotation;
+	public Material playerTurn, enemyTurn;
 	private int instructRotationIndex;
 	private Material currentMaterial;
 	public bool gameOn = false;
+	public bool menuOn = true;
+	public bool pauseOn = false;
+	public bool combatOn = false;
 	private GameObject[] gos;
 	public bool audioOn = true;
 	private TextMesh tm;
@@ -19,10 +23,12 @@ public class GUIScript : MonoBehaviour {
 
 	private GameObject mSelectedObject;
 
-	public GameObject blankBG, BacktoMainMenu, NextPage, PrevPage, goToInstruct, goToOptions, makeStart, leaveGame, muteAudio, returnToMainMenu;
+	public GameObject blankBG, BacktoMainMenu, NextPage, PrevPage, goToInstruct, goToOptions, makeStart; 
+	public GameObject leaveGame, muteAudio, returnToMainMenu, turnCounter, MenuButton, ULHud;
 	
 	public string movesLeftSTR = "";
 	private float countdown = 1;
+	private float cooldown = 2;
 
 
 	
@@ -38,8 +44,8 @@ public class GUIScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(gameOn);
-		if (gameOn == false) // Menu code
+
+		if (menuOn) // Menu code
 		{
 
 			FindTarget();
@@ -251,20 +257,24 @@ public class GUIScript : MonoBehaviour {
 				if(mSelectedObject == makeStart) 
 				
 				{
-					gameOn = true;
+
 
 					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, 0, -400), true));
 					GoTween optiTween = new GoTween(OptionScreen, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -400 ), true));
 					GoTween instruTween = new GoTween(Instructions, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -400 ), true));
 					GoTween backTween = new GoTween(BackgroundPlane, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -1600), true));
+					GoTween ulhudTween = new GoTween(UpperLeftHud, 3f, new GoTweenConfig().position (new Vector3( -135, -650, 70 )).eulerAngles(new Vector3(0, 0, 0)));
 					chain = new GoTweenChain();
 
 					chain.append(optiTween);
 					chain.append(instruTween);
 					chain.append(backTween);
 					chain.append(rotTween);
+					chain.append (ulhudTween);
 					chain.play ();
 
+					gameOn = true;
+					menuOn = false;
 				}
 
 				ChangeMaterial();
@@ -273,16 +283,53 @@ public class GUIScript : MonoBehaviour {
 
 		if (gameOn) // Game GUI code
 		{
+
+			MenuButton Script1 = ULHud.GetComponent<MenuButton>();
+			if (Script1.chosenOne) {
+				mSelectedObject = ULHud;
+
+			}
+
+			if (Input.GetMouseButtonDown(0) && mSelectedObject == ULHud) 
+			{
+				gameOn = false;
+				pauseOn = true;
+			}
+
 			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) {
 				countdown = 1;
+
 			}
 			if (countdown > 0) {
 				GameObject Object1 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
-				HeroBehaviour Script1 = Object1.GetComponent<HeroBehaviour>();
-				movesLeftSTR = Script1.movesLeftSTR;
+				HeroBehaviour Script2 = Object1.GetComponent<HeroBehaviour>();
+				movesLeftSTR = Script2.movesLeftSTR;
+				cooldown = Script2.countdown;
+
+				tm = turnCounter.GetComponent<TextMesh>();
+				tm.text = movesLeftSTR;
 				
 				countdown -= Time.deltaTime;
 			}
+			if (cooldown > 1) 
+			{
+				MenuButton.renderer.material = enemyTurn;
+				cooldown -= Time.deltaTime;
+
+			}
+			else 
+			{
+				MenuButton.renderer.material = playerTurn;
+				
+			}
+
+		}
+
+		if (pauseOn)
+		{
+
+
+
 		}
 	}
 	void ChangeMaterial()
@@ -369,5 +416,5 @@ public class GUIScript : MonoBehaviour {
 		return mSelectedObject;
 	}
 
-	
+
 }
