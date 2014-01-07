@@ -24,7 +24,7 @@ public class GUIScript : MonoBehaviour {
 	private GameObject mSelectedObject;
 
 	public GameObject blankBG, BacktoMainMenu, NextPage, PrevPage, goToInstruct, goToOptions, makeStart; 
-	public GameObject leaveGame, muteAudio, returnToMainMenu, turnCounter, MenuButton, ULHud;
+	public GameObject leaveGame, muteAudio, returnToMainMenu, turnCounter, MenuButton, ULHud, CharSel;
 	
 	public string movesLeftSTR = "";
 	private float countdown = 1;
@@ -264,6 +264,7 @@ public class GUIScript : MonoBehaviour {
 					GoTween instruTween = new GoTween(Instructions, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -400 ), true));
 					GoTween backTween = new GoTween(BackgroundPlane, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -1600), true));
 					GoTween ulhudTween = new GoTween(UpperLeftHud, 3f, new GoTweenConfig().position (new Vector3( -135, -650, 70 )).eulerAngles(new Vector3(0, 0, 0)));
+					GoTween charselTween = new GoTween(CharSel, 3f, new GoTweenConfig().position (new Vector3(0, 0, 400), true));
 					chain = new GoTweenChain();
 
 					chain.append(optiTween);
@@ -271,6 +272,7 @@ public class GUIScript : MonoBehaviour {
 					chain.append(backTween);
 					chain.append(rotTween);
 					chain.append (ulhudTween);
+					chain.append (charselTween);
 					chain.play ();
 
 					gameOn = true;
@@ -308,7 +310,15 @@ public class GUIScript : MonoBehaviour {
 
 				tm = turnCounter.GetComponent<TextMesh>();
 				tm.text = movesLeftSTR;
-				
+
+				if (movesLeftSTR == "0"){
+
+					MenuButton Script3 = MenuButton.GetComponent<MenuButton>();
+					TextMesh tn = Script3.menuHelp.GetComponent<TextMesh>();
+					tn.text = "Press space to end turn";
+
+				}
+
 				countdown -= Time.deltaTime;
 			}
 			if (cooldown > 1) 
