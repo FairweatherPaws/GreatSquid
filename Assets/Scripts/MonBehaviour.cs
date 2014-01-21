@@ -124,6 +124,13 @@ public class MonBehaviour : MonoBehaviour {
 
 					//--COMBAT IMMINENT-- INJECTION GOES HERE
 
+//					if (ownloci == playerLoci && ownlocj == playerLocj)
+//					{
+//						GameObject GuiTrigger = GameObject.FindGameObjectsWithTag("GUIController");
+//						GUIScript ScriptGUI = GuiTrigger.GetComponent<GUIScript>();
+//						ScriptGUI.combatOn = true;
+//					}
+
 					runOnce = false;
 				}
 

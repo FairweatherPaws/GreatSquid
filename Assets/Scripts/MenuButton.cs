@@ -30,7 +30,7 @@ public class MenuButton : MonoBehaviour {
 			GameObject Object1 = GameObject.FindGameObjectWithTag("Player"); //Access HeroBehaviour-script through this.
 			HeroBehaviour Script2 = Object1.GetComponent<HeroBehaviour>();
 			movesLeftSTR = Script2.movesLeftSTR;
-			Debug.Log (movesLeftSTR);
+
 			
 			if (movesLeftSTR == "0"){
 				

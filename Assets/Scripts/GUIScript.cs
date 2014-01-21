@@ -5,7 +5,7 @@ using System.Linq;
 
 public class GUIScript : MonoBehaviour {
 
-	public Transform IntroScreen, UpperLeftHud, Instructions, OptionScreen, BackgroundPlane;
+	public Transform IntroScreen, UpperLeftHud, Instructions, OptionScreen, BackgroundPlane, CharacterSelect;
 	private GoTweenChain chain;
 	public Material Instruct01, Instruct02, Instruct03, Instruct04;
 	private Material[] instructRotation;
@@ -19,12 +19,14 @@ public class GUIScript : MonoBehaviour {
 	private GameObject[] gos;
 	public bool audioOn = true;
 	private TextMesh tm;
+	public int characterClass = 0; // Lancer = 0 (default), Hoplite = 1, Rogue = 2, Cleric = 3
 
 
 	private GameObject mSelectedObject;
 
 	public GameObject blankBG, BacktoMainMenu, NextPage, PrevPage, goToInstruct, goToOptions, makeStart; 
 	public GameObject leaveGame, muteAudio, returnToMainMenu, turnCounter, MenuButton, ULHud, CharSel;
+	public GameObject cardLancer, cardHoplite, cardRogue, cardCleric;
 	
 	public string movesLeftSTR = "";
 	private float countdown = 1;
@@ -49,7 +51,7 @@ public class GUIScript : MonoBehaviour {
 		{
 
 			FindTarget();
-
+			Debug.Log (mSelectedObject.name);
 
 
 			if(Input.GetKeyDown("m")) // starts the game running
@@ -262,21 +264,37 @@ public class GUIScript : MonoBehaviour {
 					GoTween rotTween = new GoTween(IntroScreen, 3f, new GoTweenConfig().position (new Vector3( 0, 0, -400), true));
 					GoTween optiTween = new GoTween(OptionScreen, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -400 ), true));
 					GoTween instruTween = new GoTween(Instructions, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -400 ), true));
-					GoTween backTween = new GoTween(BackgroundPlane, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -1600), true));
-					GoTween ulhudTween = new GoTween(UpperLeftHud, 3f, new GoTweenConfig().position (new Vector3( -135, -650, 70 )).eulerAngles(new Vector3(0, 0, 0)));
-					GoTween charselTween = new GoTween(CharSel, 3f, new GoTweenConfig().position (new Vector3(0, 0, 400), true));
+
+
+					GoTween charselTween = new GoTween(CharacterSelect, 0.1f, new GoTweenConfig().position (new Vector3(0, 0, 400), true));
 					chain = new GoTweenChain();
 
 					chain.append(optiTween);
 					chain.append(instruTween);
-					chain.append(backTween);
-					chain.append(rotTween);
-					chain.append (ulhudTween);
 					chain.append (charselTween);
+					chain.append(rotTween);
+
+
 					chain.play ();
 
-					gameOn = true;
+
+				}
+
+				if(mSelectedObject == cardLancer || mSelectedObject == cardHoplite || mSelectedObject == cardRogue || mSelectedObject == cardCleric)
+				{
+					GoTween charselTween = new GoTween(CharacterSelect, 3f, new GoTweenConfig().position (new Vector3(0, 0, -400), true));
+					GoTween backTween = new GoTween(BackgroundPlane, 0.1f, new GoTweenConfig().position (new Vector3( 0, 0, -1600), true));
+					GoTween ulhudTween = new GoTween(UpperLeftHud, 3f, new GoTweenConfig().position (new Vector3( -135, -650, 70 )).eulerAngles(new Vector3(0, 0, 0)));
+					
+					chain = new GoTweenChain();
+					Debug.Log("Got in!");
+					chain.append (charselTween);
+					chain.append(backTween);
+					chain.append (ulhudTween);
+					chain.play ();
+					
 					menuOn = false;
+					gameOn = true;
 				}
 
 				ChangeMaterial();
@@ -311,13 +329,7 @@ public class GUIScript : MonoBehaviour {
 				tm = turnCounter.GetComponent<TextMesh>();
 				tm.text = movesLeftSTR;
 
-				if (movesLeftSTR == "0"){
 
-					MenuButton Script3 = MenuButton.GetComponent<MenuButton>();
-					TextMesh tn = Script3.menuHelp.GetComponent<TextMesh>();
-					tn.text = "Press space to end turn";
-
-				}
 
 				countdown -= Time.deltaTime;
 			}
@@ -336,6 +348,13 @@ public class GUIScript : MonoBehaviour {
 		}
 
 		if (pauseOn)
+		{
+
+
+
+		}
+
+		if (combatOn)
 		{
 
 
@@ -415,12 +434,15 @@ public class GUIScript : MonoBehaviour {
 //		}
 //	}
 	GameObject FindTarget(){
-	foreach (GameObject go in gos) {
-		TextScript Script1 = go.GetComponent<TextScript>();
-		if (Script1.chosenOne == true) {
-			mSelectedObject = go;
-			return mSelectedObject;
-		}
+		foreach (GameObject go in gos) {
+			TextScript Script1 = go.GetComponent<TextScript>();
+			CharSelGlow Script2 = go.GetComponent<CharSelGlow>();
+			if (Script1.chosenOne == true) 
+			{
+				mSelectedObject = go;
+				return mSelectedObject;
+			}
+
 	}
 		mSelectedObject = blankBG;
 		return mSelectedObject;
